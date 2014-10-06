@@ -1,0 +1,11 @@
+{
+	"names": {
+		"styles": "styles.less",
+		"data": "data.json",
+		"scripts": "scripts.js",
+		"template": "template.jade"
+	},
+	"dir": {
+		"root": "blocks"
+	}
+}
