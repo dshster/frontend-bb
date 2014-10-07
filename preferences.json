@@ -1,9 +1,10 @@
 {
-	"names": {
-		"styles": "styles.less",
-		"data": "data.json",
-		"scripts": "scripts.js",
-		"template": "template.jade"
+	"extension": {
+		"styles": "less",
+		"data": "json",
+		"scripts": "js",
+		"template": "jade",
+		"markup": "html"
 	},
 	"dir": {
 		"root": "blocks"

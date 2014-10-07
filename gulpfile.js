@@ -12,16 +12,25 @@ var process = function() {
 	if ('object' === typeof structure) {
 		structure.blocks.forEach(function(block) {
 			var blockpath = pref.dir.root + path.sep + block.id + path.sep,
-			    template = blockpath + pref.names.template,
-			    jsondata = blockpath + pref.names.data;
+			    template = blockpath + block.id + '.' + pref.extension.template,
+			    jsondata = './' + blockpath + block.id + '.' + pref.extension.data,
+			    markup = block.id + '.' + pref.extension.markup;
 
-		    gulp.src(template)
-		        .pipe($.expectFile({ checkRealFile: true }, template))
-		        .pipe($.data(function(file, cb) {
-					cb(require('.' + path.sep + jsondata));
+			gulp.src(template)
+				.pipe($.expectFile({ checkRealFile: true }, template))
+				.pipe($.data(function(file) {
+					return require(jsondata);
 				}))
-		        .pipe($.jade({}))
-		        .pipe(gulp.dest(blockpath));
+				.pipe($.jade({
+					pretty: true
+				}))
+				.on('error', function(event) {
+					console.log(
+						'error', event
+					);
+				})
+				.pipe($.rename(markup))
+				.pipe(gulp.dest(blockpath));
 		});
 	}
 };
