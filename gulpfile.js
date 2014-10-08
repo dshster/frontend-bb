@@ -2,19 +2,30 @@
 'use strict';
 
 var gulp = require('gulp'),
-    pref = require('./preferences.json'),
-    path = require('path'),
+    structure = require('./structure.json'),
     $ = require('gulp-load-plugins')();
 
-var process = function() {
-	var structure = require('./structure.json');
+var engine = {
+	parse: function(branch) {
+		if ('object' === typeof branch) {
+			branch.block.forEach(function(block) {
+				engine.process(block);
 
-	if ('object' === typeof structure) {
-		structure.blocks.forEach(function(block) {
-			var blockpath = pref.dir.root + path.sep + block.id + path.sep,
-			    template = blockpath + block.id + '.' + pref.extension.template,
-			    jsondata = './' + blockpath + block.id + '.' + pref.extension.data,
-			    markup = block.id + '.' + pref.extension.markup;
+				if ('object' === typeof block.content) {
+					engine.parse(block.content);
+				}
+			});
+		}
+	},
+
+	process: function(block) {
+		var pref = require('./preferences.json'),
+		    path = require('path'),
+		    dir = pref.dir.root + path.sep + block.name + path.sep,
+		    basename = dir + block.name,
+		    template = basename + '.' + pref.extension.template,
+		    jsondata = '.' + path.sep + dir + block.name + '.' + pref.extension.data,
+		    markup = block.name + '.' + pref.extension.markup;
 
 			gulp.src(template)
 				.pipe($.expectFile({ checkRealFile: true }, template))
@@ -24,15 +35,11 @@ var process = function() {
 				.pipe($.jade({
 					pretty: true
 				}))
-				.on('error', function(event) {
-					console.log(
-						'error', event
-					);
-				})
 				.pipe($.rename(markup))
-				.pipe(gulp.dest(blockpath));
-		});
+				.pipe(gulp.dest(dir));
 	}
 };
 
-gulp.task('default', process);
+gulp.task('default', function() {
+	engine.parse(structure);
+});

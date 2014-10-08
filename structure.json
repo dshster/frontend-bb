@@ -1,7 +1,14 @@
 {
-	"blocks": [
+	"block": [
 		{
-			"id": "base"
+			"name": "base",
+			"content": {
+				"block": [
+					{
+						"name": "header"
+					}
+				]
+			}
 		}
 	]
 }
